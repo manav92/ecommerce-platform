@@ -8,10 +8,10 @@ COPY product-import-worker ./product-import-worker
 COPY search-service ./search-service
 COPY common-lib ./common-lib
 
-RUN mvn clean package -pl product-import-worker -am -DskipTests
+RUN mvn clean package -pl search-service -am -DskipTests
 
 FROM eclipse-temurin:21-jre
 WORKDIR /app
 # Copy the JAR from the 'build' stage above
-COPY --from=build /app/product-import-worker/target/*.jar app.jar
+COPY --from=build /app/search-service/target/*.jar app.jar
 ENTRYPOINT ["java","-jar","app.jar"]

@@ -10,6 +10,10 @@ on:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    strategy:
+      # This creates 4 parallel sub-jobs
+      matrix:
+        service: [ catalog-service, search-service, api-gateway, product-import-worker ]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -27,6 +31,6 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./docker/catalog-service/Dockerfile
+          file: ./docker/${{ matrix.service }}/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/mrajora92:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{matrix.service}}:v1

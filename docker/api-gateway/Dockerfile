@@ -1,4 +1,17 @@
+FROM maven:3.9.8-eclipse-temurin-21 AS build
+WORKDIR /app
+COPY pom.xml .
+# 2. Copy ALL module folders (Maven needs them to resolve the reactor)
+COPY api-gateway ./api-gateway
+COPY catalog-service ./catalog-service
+COPY product-import-worker ./product-import-worker
+COPY search-service ./search-service
+COPY common-lib ./common-lib
+
+RUN mvn clean package -pl api-gateway -am -DskipTests
+
 FROM eclipse-temurin:21-jre
 WORKDIR /app
-COPY target/*.jar app.jar
-ENTRYPOINT ["java","-jar","/app/app.jar"]
+# Copy the JAR from the 'build' stage above
+COPY --from=build /app/api-gateway/target/*.jar app.jar
+ENTRYPOINT ["java","-jar","app.jar"]
