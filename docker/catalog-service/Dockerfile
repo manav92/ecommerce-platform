@@ -13,5 +13,5 @@ RUN mvn clean package -pl catalog-service -am -DskipTests
 FROM eclipse-temurin:21-jre
 WORKDIR /app
 # Copy the JAR from the 'build' stage above
-COPY --from=build /app/target/catalog-service/*.jar app.jar
+COPY --from=build /app/catalog-service/target/*.jar app.jar
 ENTRYPOINT ["java","-jar","app.jar"]
