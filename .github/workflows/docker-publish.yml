@@ -2,7 +2,7 @@ name: Build and Push to Docker Hub
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-  
+
 on:
   push:
     branches: [ "main" ]  # Triggers when you push to the main branch
@@ -26,6 +26,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: ./catalog-service
+          file: ./docker/catalog-service/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/mrajora92:latest
