@@ -6,6 +6,7 @@ COPY api-gateway ./api-gateway
 COPY catalog-service ./catalog-service
 COPY product-import-worker ./product-import-worker
 COPY search-service ./search-service
+COPY common-lib ./common-lib
 
 RUN mvn clean package -pl catalog-service -am -DskipTests
 
