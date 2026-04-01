@@ -5,8 +5,10 @@ COPY pom.xml .
 COPY api-gateway ./api-gateway
 COPY catalog-service ./catalog-service
 COPY product-import-worker ./product-import-worker
-COPY search-service ./search-service
 COPY common-lib ./common-lib
+COPY inventory-service ./inventory-service
+COPY order-service ./order-service
+COPY cart-service ./cart-service
 
 RUN mvn clean package -pl product-import-worker -am -DskipTests
 
@@ -14,4 +16,5 @@ FROM eclipse-temurin:21-jre
 WORKDIR /app
 # Copy the JAR from the 'build' stage above
 COPY --from=build /app/product-import-worker/target/*.jar app.jar
+EXPOSE 8082
 ENTRYPOINT ["java","-jar","app.jar"]

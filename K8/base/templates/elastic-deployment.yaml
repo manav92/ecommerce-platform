@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.elastic.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.elastic.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.elastic.name }}
+    spec:
+      containers:
+        - name: shop-elasticsearch
+          image: {{ .Values.elastic.image }}
+          ports:
+            - containerPort: 9200
+          env:
+            - name: discovery.type
+              value: single-node
+            - name: xpack.security.enabled
+              value: "false"
+            - name: ES_JAVA_OPTS
+              value: "-Xms256m -Xmx512m"
+          volumeMounts:
+            - name: elastic-storage
+              mountPath: /usr/share/elasticsearch/data
+      volumes:
+        - name: elastic-storage
+          persistentVolumeClaim:
+            claimName: {{ .Values.elastic.name }}-pvc

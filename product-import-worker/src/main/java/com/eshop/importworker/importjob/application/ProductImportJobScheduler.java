@@ -27,7 +27,6 @@ public class ProductImportJobScheduler {
     }
 
     @Scheduled(fixedDelayString = "${import.poll-interval-ms:15000}")
-    @Transactional
     public void pollAndLaunch() throws Exception {
         List<ProductImportJob> jobs = repository.findTop5ByStatusOrderBySubmittedAtAsc(ImportJobStatus.RECEIVED);
 

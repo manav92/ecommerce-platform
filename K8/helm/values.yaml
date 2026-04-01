@@ -1,0 +1,18 @@
+replicaCount: 2
+image:
+  repository: mrajora92/catalog-service
+  tag: v1
+  pullPolicy: IfNotPresent
+service:
+  name: catalog-service
+  type: ClusterIP
+  port: 80
+database:
+  name: catalog-db
+  image: postgres:16
+  user: postgres
+  password: postgres
+  dbName: catalogdb
+  storageSize: 1Gi
+ingress:
+  enabled: false

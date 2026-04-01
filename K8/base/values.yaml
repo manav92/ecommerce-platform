@@ -1,0 +1,79 @@
+replicaCount: 1
+catalog:
+  image:
+    repository: mrajora92/catalog-service
+    tag: v1
+    pullPolicy: IfNotPresent
+elastic:
+  name: elastic-search
+  image: docker.elastic.co/elasticsearch/elasticsearch:8.13.4
+  storageSize: 10Mi
+kafka:
+  replicaCount: 1
+  image: apache/kafka:latest
+  clusterId: OTMwNzFhYTY1ODNiNGE5OT
+  clientPort: 9092
+  controllerPort: 29092
+  internalPort: 19092
+
+kafdrop:
+  enabled: false
+  image: obsidiandynamics/kafdrop:3.30.0
+  port: 9000
+
+catalog-service:
+  name: catalog-service
+  type: ClusterIP
+  port: 8081
+database:
+  name: catalog-db
+  image: postgres:16
+  user: postgres
+  password: postgres
+  dbName: catalogdb
+  storageSize: 1Gi
+
+search-service:
+  name: search-service
+  type: ClusterIP
+  port: 8083
+  image:
+    repository: mrajora92/search-service
+    tag: v1
+    pullPolicy: IfNotPresent
+
+product-import-worker-service:
+  name: product-import-worker-service
+  type: ClusterIP
+  port: 8082
+  image:
+    repository: mrajora92/product-import-worker
+    tag: v1
+    pullPolicy: IfNotPresent
+
+apigateway:
+  name: api-gateway
+  type: NodePort
+  port: 8080
+  image:
+    repository: mrajora92/api-gateway
+    tag: v1
+    pullPolicy: IfNotPresent
+
+ingress:
+  enabled: false
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "20m"
+  hosts:
+    - host: api.shop.example.com
+      paths:
+        - path: /api/v1/products
+          serviceName: catalog-service
+          servicePort: 8081
+        - path: /api/v1/admin/product-imports
+          serviceName: product-import-worker-service
+          servicePort: 8082
+        - path: /api/v1/search
+          serviceName: search-service
+          servicePort: 8083

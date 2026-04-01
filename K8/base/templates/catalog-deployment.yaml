@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ index .Values "catalog-service" "name" }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ index .Values "catalog-service" "name" }}
+  template:
+    metadata:
+      labels:
+        app: {{ index .Values "catalog-service" "name" }}
+    spec:
+      containers:
+        - name: {{ index .Values "catalog-service" "name" }}
+          image: "{{ .Values.catalog.image.repository }}:{{ .Values.catalog.image.tag }}"
+          imagePullPolicy: {{ .Values.catalog.image.pullPolicy }}
+          env:
+            # Use the Service Name 'catalog-db' instead of localhost
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:postgresql://catalog-db:5432/catalogdb"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "postgres"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "postgres"
+            - name: SPRING_FLYWAY_BASELINE-ON-MIGRATE
+              value: "true"
+          ports:
+            - name: http
+              containerPort: 8081

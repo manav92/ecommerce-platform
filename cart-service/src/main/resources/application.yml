@@ -1,0 +1,36 @@
+server:
+  port: 8086
+
+spring:
+  application:
+    name: cart-service
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 2s
+  jackson:
+    default-property-inclusion: non_null
+
+services:
+  catalog-service:
+    base-url: http://localhost:8081
+  cart:
+    ttl-minutes: 10080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}

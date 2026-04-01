@@ -13,7 +13,7 @@ jobs:
     strategy:
       # This creates 4 parallel sub-jobs
       matrix:
-        service: [ catalog-service, search-service, api-gateway, product-import-worker ]
+        service: [ catalog-service, cart-service, api-gateway, product-import-worker, inventory-service, order-service]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

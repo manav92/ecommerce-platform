@@ -8,6 +8,8 @@ import com.eshop.importworker.catalog.repository.ProductVariantRepository;
 import com.eshop.importworker.messaging.ProductEventPublisher;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.stereotype.Component;
@@ -19,6 +21,8 @@ public class ProductCsvRowWriter implements ItemWriter<ProcessedProductRow> {
     private final ProductVariantRepository variantRepository;
     private final ProductEventPublisher productEventPublisher;
     private final Counter processedRows;
+
+    Logger Log = LoggerFactory.getLogger(ProductCsvRowProcessor.class);
 
     public ProductCsvRowWriter(ProductRepository productRepository,
                                ProductVariantRepository variantRepository,
@@ -33,30 +37,37 @@ public class ProductCsvRowWriter implements ItemWriter<ProcessedProductRow> {
     @Override
     @Transactional
     public void write(Chunk<? extends ProcessedProductRow> chunk) {
+        Log.info("Start: ProductCsvRowWriter: Size-+ " + chunk.size());
         for (ProcessedProductRow row : chunk.getItems()) {
-            Product product = productRepository.findByProductCode(row.productCode())
-                    .orElseGet(Product::new);
+            try {
+                Log.info("ProductCsvRowWriter:" + row);
+                Product product = productRepository.findByProductCode(row.productCode())
+                        .orElseGet(Product::new);
 
-            product.setProductCode(row.productCode());
-            product.setName(row.name());
-            product.setBrand(row.brand());
-            product.setCategory(row.category());
-            product.setDescription(row.description());
-            Product savedProduct = productRepository.save(product);
+                product.setProductCode(row.productCode());
+                product.setName(row.name());
+                product.setBrand(row.brand());
+                product.setCategory(row.category());
+                product.setDescription(row.description());
+                Product savedProduct = productRepository.save(product);
 
-            ProductVariant variant = variantRepository.findBySku(row.sku())
-                    .orElseGet(ProductVariant::new);
+                ProductVariant variant = variantRepository.findBySku(row.sku())
+                        .orElseGet(ProductVariant::new);
 
-            variant.setProduct(savedProduct);
-            variant.setSku(row.sku());
-            variant.setSize(row.size());
-            variant.setDesign(row.design());
-            variant.setPriceAmount(row.priceAmount());
-            variant.setCurrency(row.currency());
-            variantRepository.save(variant);
+                variant.setProduct(savedProduct);
+                variant.setSku(row.sku());
+                variant.setSize(row.size());
+                variant.setDesign(row.design());
+                variant.setPriceAmount(row.priceAmount());
+                variant.setCurrency(row.currency());
+                variantRepository.save(variant);
 
-            productEventPublisher.publishProductUpserted(row);
-            processedRows.increment();
+                productEventPublisher.publishProductUpserted(row);
+                processedRows.increment();
+                Log.info("End: ProductCsvRowWriter:");
+            } catch (Exception exp) {
+                Log.error("Exception:" + exp);
+            }
         }
     }
 }

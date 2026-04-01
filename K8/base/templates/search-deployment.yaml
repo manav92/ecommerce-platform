@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ index .Values "search-service" "name" }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ index .Values "search-service" "name" }}
+  template:
+    metadata:
+      labels:
+        app: {{ index .Values "search-service" "name" }}
+    spec:
+      containers:
+        - name: {{ index .Values "search-service" "name" }}
+          image: "{{ (index .Values "search-service").image.repository }}:{{ (index .Values "search-service").image.tag }}"
+          imagePullPolicy: {{ (index .Values "search-service").image.pullPolicy }}
+          env:
+            - name: SPRING_KAFKA_BOOTSTRAP-SERVERS
+              value: "kafka-0.kafka-svc:9092"
+            - name: SPRING_ELASTICSEARCH_URIS
+              value: "http://elastic-search:9200"
+          ports:
+            - name: http
+              containerPort: 8083

@@ -17,8 +17,7 @@ public class ProductImportJobController {
     }
 
     @PostMapping(consumes = "multipart/form-data")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public ProductImportJobResponse create(@RequestPart("file") MultipartFile file,
+    @ResponseStatus(HttpStatus.ACCEPTED)    public ProductImportJobResponse create(@RequestPart("file") MultipartFile file,
                                            @RequestParam("uploadedBy") String uploadedBy) {
         return service.create(file, uploadedBy);
     }

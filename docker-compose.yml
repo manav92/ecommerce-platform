@@ -5,13 +5,21 @@ services:
     image: postgres:16
     container_name: shop-postgres
     environment:
-      POSTGRES_DB: catalogdb
+#      POSTGRES_DB: catalogdb
+      POSTGRES_DB: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  redis:
+    image: redis:7.2-alpine
+    container_name: shop-redis
+    ports:
+      - "6379:6379"
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.6.1
@@ -35,17 +43,6 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.4
-    container_name: shop-elasticsearch
-    environment:
-      discovery.type: single-node
-      xpack.security.enabled: "false"
-      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
-    ports:
-      - "9200:9200"
-    volumes:
-      - elastic_data:/usr/share/elasticsearch/data
   prometheus:
     image: prom/prometheus:v2.52.0
     container_name: ecommerce-prometheus
@@ -60,6 +57,53 @@ services:
       - ./infra/grafana/provisioning:/etc/grafana/provisioning
     depends_on: [ prometheus ]
 
+  catalog-service:
+    build:
+      context: .
+      dockerfile: catalog-service/Dockerfile
+    container_name: catalog-service
+    ports:
+      - "8081:8081"
+
+  product-import-service:
+    build:
+      context: .
+      dockerfile: product-import-worker/Dockerfile
+    container_name: product-import-service
+    ports:
+      - "8082:8082"
+
+  cart-service:
+    build:
+      context: .
+      dockerfile: cart-service/Dockerfile
+    container_name: cart-service
+    ports:
+      - "8086:8086"
+
+  inventory-service:
+    build:
+      context: .
+      dockerfile: inventory-service/Dockerfile
+    container_name: inventory-service
+    ports:
+      - "8085:8085"
+
+  order-service:
+    build:
+      context: .
+      dockerfile: order-service/Dockerfile
+    container_name: order-service
+    ports:
+      - "8087:8087"
+
+  api-service:
+    build:
+      context: .
+      dockerfile: api-gateway/Dockerfile
+    container_name: api-service
+    ports:
+      - "8080:8080"
+
 volumes:
   postgres_data:
-  elastic_data:

@@ -1,0 +1,4 @@
+productCode,name,brand,category,description,sku,size,design,priceAmount,currency
+TSHIRT-001,Classic T-Shirt,Acme,apparel,Regular fit cotton t-shirt,TSHIRT-001-S-RED,S,RED,499.00,INR
+TSHIRT-001,Classic T-Shirt,Acme,apparel,Regular fit cotton t-shirt,TSHIRT-001-M-RED,M,RED,499.00,INR
+HOODIE-001,Winter Hoodie,Acme,apparel,Warm fleece hoodie,HOODIE-001-L-BLK,L,BLACK,1299.00,INR

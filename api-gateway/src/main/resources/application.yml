@@ -12,21 +12,21 @@ spring:
           predicates:
             - Path=/api/v1/products/**,/api/v1/admin/products/**,/api/v1/admin/product-imports/**
         - id: search-service
-          uri: http://localhost:8083
+          uri: http://localhost:8084
           predicates:
             - Path=/api/v1/search/**
-#        - id: inventory-service
-#          uri: http://localhost:8084
-#          predicates:
-#            - Path=/api/v1/inventory/**
-#        - id: cart-service
-#          uri: http://localhost:8085
-#          predicates:
-#            - Path=/api/v1/cart/**
-#        - id: order-service
-#          uri: http://localhost:8086
-#          predicates:
-#            - Path=/api/v1/orders/**
+        - id: inventory-service
+          uri: http://localhost:8085
+          predicates:
+            - Path=/api/v1/inventory/**
+        - id: cart-service
+          uri: http://localhost:8086
+          predicates:
+            - Path=/api/v1/cart/**
+        - id: order-service
+          uri: http://localhost:8087
+          predicates:
+            - Path=/api/v1/orders/**
 
 management:
   endpoints:

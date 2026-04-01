@@ -2,6 +2,7 @@ package com.eshop.catalog.product.dto;
 
 import com.eshop.catalog.product.domain.ProductStatus;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 public record ProductResponse(
@@ -13,5 +14,6 @@ public record ProductResponse(
         String description,
         ProductStatus status,
         Instant createdAt,
-        Instant updatedAt
+        Instant updatedAt,
+        List<VariantResponse> variants
 ) {}

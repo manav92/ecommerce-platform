@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.database.name }}
+spec:
+  replicas: 1 # Databases should typically have 1 replica unless using specialized clusters
+  selector:
+    matchLabels:
+      app: {{ .Values.database.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.database.name }}
+    spec:
+      containers:
+        - name: postgres
+          image: {{ .Values.database.image }}
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: {{ .Values.database.dbName }}
+            - name: POSTGRES_USER
+              value: {{ .Values.database.user }}
+            - name: POSTGRES_PASSWORD
+              value: {{ .Values.database.password }}
+          volumeMounts:
+            - name: db-storage
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: db-storage
+          persistentVolumeClaim:
+            claimName: {{ .Values.database.name }}-pvc

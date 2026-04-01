@@ -29,11 +29,10 @@
         <module>api-gateway</module>
         <module>catalog-service</module>
         <module>product-import-worker</module>
-        <module>search-service</module>
-        <!--<module>inventory-service</module>
-        <module>cart-service</module>
-        <module>order-service</module>
-        <module>notification-service</module>-->
+        <!-- <module>search-service</module>-->
+         <module>inventory-service</module>
+         <module>cart-service</module>
+         <module>order-service</module>
     </modules>
 
     <dependencyManagement>

@@ -1,27 +1,46 @@
-# Ecommerce Platform Skeleton
+# E-Commerce Platform
 
-This zip contains the generated codebase skeleton up to the current phase:
+A microservices-based e-commerce platform built with Spring Boot, Kafka, PostgreSQL, Redis, Elasticsearch, Docker, and Spring Batch.
+
+## Modules
+
 - common-lib
-- api-gateway
 - catalog-service
 - product-import-worker
 - search-service
-- docker-compose, Prometheus, Grafana provisioning
-- sample CSV data
-
-Notes:
-- This is a scaffold, not a fully production-ready build.
-- Some listeners and batch error handling are partial and need refinement.
-- JPA uses ddl-auto=update for now; Flyway is the next recommended step.
-
-Phase 4 additions:
+- api-gateway
 - inventory-service
 - cart-service
-- Flyway added to catalog and inventory
-- richer search indexing event payload
-- basic import row metrics
+- order-service
 
-Phase 5 additions:
-- order-service with checkout, history, reorder
-- notification-service consuming order.placed
-- gateway routes and Prometheus targets updated
+## Architecture
+
+- catalog-service manages products, variants, and import job creation.
+- product-import-worker polls import jobs, processes CSV files with Spring Batch, upserts catalog data, and publishes Kafka events.
+- search-service consumes product upsert events and indexes searchable documents in Elasticsearch.
+- inventory-service manages stock and inventory reservations.
+- cart-service stores carts in Redis and fetches live SKU pricing from catalog-service.
+- order-service creates orders, coordinates inventory reservation, and publishes order events.
+- api-gateway routes external requests to backend services.
+
+## Tech Stack
+
+- Java 21
+- Spring Boot 3
+- Spring Cloud Gateway
+- Spring Data JPA
+- Spring Data Redis
+- Spring Batch
+- PostgreSQL
+- Redis
+- Apache Kafka
+- Elasticsearch
+- Docker Compose
+- Micrometer + Prometheus
+
+## Run Infrastructure
+1. Build jars:
+   mvn clean package -DskipTests
+
+2. Start all containers:
+docker compose up -d

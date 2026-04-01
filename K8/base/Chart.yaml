@@ -1,0 +1,4 @@
+apiVersion: v1
+name: ecom-application
+description: A Helm chart for ecom app
+version: 1.0.0
